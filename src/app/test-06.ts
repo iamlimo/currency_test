@@ -8,6 +8,8 @@
 import { Component, NgModule  } from '@angular/core';
 import { RouterModule} from "@angular/router";
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { concat } from 'rxjs';
 
 @Component({
   selector: "ng-app",
@@ -15,8 +17,13 @@ import { CommonModule } from '@angular/common';
     <h2>User Review:</h2>
     <textarea
       class="textfield"
+      #content1 
+      type="text" 
+      name="content" 
+     (click)="setContent(content1.value)"
       placeholder="Write your Review"
       [value]="review_input"
+      [(ngModel)]="review_input"
       (keyup.enter)="review_input = $event.target.value"
     ></textarea>
     <br /><br />
@@ -54,16 +61,24 @@ Pellentesque blandit mauris congue elit eleifend, facilisis tristique dolor dict
           
 At https://wallethub.com <b>bolded text</b>`;
 
-  review_content = "";
-
+  review_content : any = "";
+  mainContent : any = '';
   ngOnInit() {
-    this.review_content = this.review_input;
+    this.review_content = this.review_input + this.mainContent ;
+  }
+  
+
+
+  setContent(value) {
+    console.log(value);
+    this.mainContent = value;
   }
 }
 
 @NgModule({
     imports : [
         CommonModule,
+        FormsModule,
         RouterModule.forChild([
             {
                 path : "",

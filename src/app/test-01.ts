@@ -7,21 +7,21 @@
 
 import { Component, Input,NgModule  } from '@angular/core';
 import { RouterModule } from "@angular/router";
-import { CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: "ng-app",
-  template: `<div>
+  template: `
+    <div *ngIf="loan_amount === 0 || null">
       <h2>Loan Details</h2>
-      <b> Monthly Payment:</b> {{ monthly_payment | currency }} <br />
-      <b>Late Payment Fee : {{ late_payment }}</b> <br />
+      <b> Monthly Payment:</b>  N/A <br/>
+          <b>Late Payment Fee : </b> N/A <br />
     </div>
-    <div *ngIf="loan_amount === 0">
+    <div *ngIf="loan_amount">
       <h2>Loan Details</h2>
-      <b> Monthly Payment:</b> N/A <br />
-      <b>Late Payment Fee : N/A</b> <br />
+      <b> Monthly Payment:</b>  {{ 2 * loan_amount/100 | currency}} <br/>
+          <b>Late Payment Fee : </b> {{ 5 *  monthly_payment/100 | currency}} <br />
     </div>
-    
     `,
 })
 export class Test01Component {
@@ -32,6 +32,7 @@ export class Test01Component {
 
 @NgModule({
     imports : [
+       CommonModule,
         RouterModule.forChild([
             {
                 path : "",
@@ -42,3 +43,14 @@ export class Test01Component {
     declarations : [Test01Component]
 })
 export class Test01Module {}
+
+ // <div>
+  //     <h2>Loan Details</h2>
+  //     <b> Monthly Payment:</b> {{ monthly_payment | currency }} <br />
+  //     <b>Late Payment Fee : {{ late_payment }}</b> <br />
+  //   </div>
+  //   <div *ngIf="loan_amount === 0">
+  //     <h2>Loan Details</h2>
+  //     <b> Monthly Payment:</b> N/A <br />
+  //     <b>Late Payment Fee : N/A</b> <br />
+  //   </div>

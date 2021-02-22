@@ -15,22 +15,69 @@
 import { Component, NgModule  } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { CommonModule } from '@angular/common';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';  
+ import { FormsModule,  ReactiveFormsModule} from '@angular/forms';
 
 @Component({
     selector : 'ng-app',
-    template : `<form>
-                    <h2>Login</h2>
-                    <br/>
-                    <input type="email" value="" name="email" />
-                    <br/>
-                    <input type="password" value="" name="password" />
-                    <button type="submit">Submit</button>
-                    <br/><br/>
+    template : `
+                <form class="form" [formGroup]="loginForm"  (ngSubmit)="loginUser(loginForm.value)">
+
+                                        <input mode="md" type="email" formControlName="email" placeholder="Email address" />
+
+
+                                    <div class="validation-errors">
+                                        <ng-container *ngFor="let validation of validation_messages.email">
+                                        <div class="error-message" *ngIf="loginForm.get('email').hasError(validation.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+                                            {{ validation.message }}
+                                        </div>
+                                        </ng-container>
+                                    </div>
+
+                        <input mode="md" type="password" class="password" formControlName="password" placeholder="Password" />
+
+
+                    <div class="validation-errors">
+                        <ng-container *ngFor="let validation of validation_messages.password">
+                        <div class="error-message" *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                            {{ validation.message }}
+                        </div>
+                        </ng-container>
+                    </div>
+                    <button  type="submit" [disabled]="!loginForm.valid">Submit</button>
                     <div *ngIf="logged_in">Logged In!</div>
-                </form>`
+                    </form>`,
+                    styles: [
+                        `
+                          .validation-errors {
+                            color: red
+                          }
+                        `
+                      ],
 })
 export class Test03Component {
-
+    loginForm: FormGroup = this.formBuilder.group({
+        email: new FormControl('', Validators.compose([
+          Validators.required,
+          Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+        ])),
+        password: new FormControl('', Validators.compose([
+          Validators.minLength(5),
+          Validators.required
+        ])),
+      });
+      errorMessage: string;
+      validation_messages = {
+        'email': [
+          { type: 'required', message: 'Email is required.' },
+          { type: 'pattern', message: 'Please enter a valid email.' }
+        ],
+        'password': [
+          { type: 'required', message: 'Password is required.' },
+          { type: 'minlength', message: 'Password must be at least 5 characters long.' }
+        ]
+      };
+      constructor(public formBuilder: FormBuilder) { }
     email:string = "";
     password:string = "";
 
@@ -40,6 +87,8 @@ export class Test03Component {
 @NgModule({
     imports : [
         CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
         RouterModule.forChild([
             {
                 path : "",
